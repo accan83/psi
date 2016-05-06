@@ -3,9 +3,11 @@
 namespace frontend\controllers;
 
 use common\models\Material;
+use common\models\MaterialAccepted;
 use common\models\MaterialExpenditureDetail;
 use common\models\RequestedMaterial;
 use common\models\RequestedMaterialDetail;
+use common\models\Stock;
 use Yii;
 use common\models\MaterialExpenditure;
 use yii\data\ActiveDataProvider;
@@ -69,7 +71,7 @@ class ExpenditureController extends Controller
     public function actionCreate($requested_material_id)
     {
         $model = new MaterialExpenditure();
-        $requested = RequestedMaterial::find()->where(['id', $requested_material_id])->one();
+        $requested = RequestedMaterial::find()->where(['id' => $requested_material_id])->one();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id, 'requested_material_id' => $requested_material_id]);
@@ -98,7 +100,16 @@ class ExpenditureController extends Controller
             $stock = $material->stock->qty;
             $safetyStock = $material->safety_stock;
             if ($stock - $model->qty >= $safetyStock) {
+                $rop = ExpenditureController::getReOrderPoint($material_id);
                 if ($model->save()) {
+                    $mStock = Stock::find()->where(['material_id' => $material_id])->one();
+                    $mStock->qty = $stock - $model->qty;
+                    $mStock->save();
+                    if ($mStock->qty <= $rop) {
+                        $message = 'You must re-order for Material ' . $material->code . '.';
+                        $message .= 'The stock ' . $mStock->qty . 'kg only, and safety stock is ' . $material->safety_stock . 'kg';
+                        Yii::$app->getSession()->setFlash('info', $message);
+                    }
                     return $this->redirect(['view', 'id' => $materialExpenditure->id, 'requested_material_id' => $materialExpenditure->requested_material_id]);
                 }
             }
@@ -107,7 +118,7 @@ class ExpenditureController extends Controller
 
                 if ($stock > $safetyStock) {
                     $available = intval($stock - $safetyStock);
-                    $message .= ' You can only use ' . $available;
+                    $message .= ' You can only use ' . $available . 'kg';
                 }
 
                 Yii::$app->getSession()->setFlash('error', $message);
@@ -156,5 +167,51 @@ class ExpenditureController extends Controller
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+    public static function getReOrderPoint($material_id)
+    {
+        $material_accepted_detail = MaterialAcceptedDetail::find()->where(['material_id' => $material_id])->all();
+        $material_expenditure_detail = MaterialExpenditureDetail::find()->where(['material_id' => $material_id])->all();
+        $item_count = 0;
+        $leadtime = 0;
+
+        foreach ($material_accepted_detail as $data) {
+            $material_accepted = MaterialAccepted::find()->where(['id' => $data->material_accepted_id])->one();
+            $reserved_material = ReservedMaterial::find()->where(['id' => $material_accepted->reserved_material_id])->one();
+            $accepted_at = $material_accepted->created_at;
+            $reserved_at = $reserved_material->created_at;
+
+            $leadtime += $accepted_at - $reserved_at;
+            $item_count++;
+        }
+
+        $item_count2 = 0;
+        $demand = 0;
+
+        foreach ($material_expenditure_detail as $data) {
+            $qty = $data->qty;
+
+            $demand += $qty;
+            $item_count2++;
+        }
+
+        $material = Material::find()->where(['id' => $material_id])->one();
+        $safety_stock = $material->safety_stock;
+        $rop = $safety_stock;
+        if ($item_count > 0 && $item_count2 > 0) {
+            $leadtime_rate = $leadtime / $item_count;
+            $demand_rate = $demand / $item_count2;
+
+            $days = floor($leadtime_rate / (24*60*60));
+            $weeks = floor($days / 7);
+            $rop = floor($safety_stock + ($demand_rate * $weeks));
+//            echo "ss = " . $safety_stock . "\n";
+//            echo "demand = " . $demand_rate . "\n";
+//            echo "leadtime = " . $weeks . "\n";
+//            echo "rop = " . $rop . "\n";
+        }
+
+        return $rop;
     }
 }
