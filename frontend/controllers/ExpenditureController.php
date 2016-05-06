@@ -4,9 +4,11 @@ namespace frontend\controllers;
 
 use common\models\Material;
 use common\models\MaterialAccepted;
+use common\models\MaterialAcceptedDetail;
 use common\models\MaterialExpenditureDetail;
 use common\models\RequestedMaterial;
 use common\models\RequestedMaterialDetail;
+use common\models\ReservedMaterial;
 use common\models\Stock;
 use Yii;
 use common\models\MaterialExpenditure;
