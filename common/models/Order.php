@@ -4,6 +4,7 @@ namespace common\models;
 
 use Yii;
 use yii\behaviors\TimestampBehavior;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "order".
@@ -32,7 +33,11 @@ class Order extends \yii\db\ActiveRecord
      public function behaviors()
      {
          return [
-             TimestampBehavior::className(),
+             [
+                 'class' => TimestampBehavior::className(),
+                 'createdAtAttribute' => 'created_at',
+                 'updatedAtAttribute' => 'created_at',
+             ],
          ];
      }
 
@@ -42,7 +47,6 @@ class Order extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['customer', 'created_at'], 'required'],
             [['customer'], 'string', 'max' => 255]
         ];
     }
