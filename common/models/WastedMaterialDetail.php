@@ -1,27 +1,27 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use Yii;
 
 /**
- * This is the model class for table "material_usage_detail".
+ * This is the model class for table "wasted_material_detail".
  *
- * @property integer $material_usage_id
+ * @property integer $wasted_material_id
  * @property integer $material_id
  * @property integer $qty
  *
  * @property Material $material
- * @property MaterialUsage $materialUsage
+ * @property WastedMaterial $wastedMaterial
  */
-class MaterialUsageDetail extends \yii\db\ActiveRecord
+class WastedMaterialDetail extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'material_usage_detail';
+        return 'wasted_material_detail';
     }
 
     /**
@@ -30,8 +30,8 @@ class MaterialUsageDetail extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['material_usage_id', 'material_id', 'qty'], 'required'],
-            [['material_usage_id', 'material_id', 'qty'], 'integer']
+            [['wasted_material_id', 'material_id', 'qty'], 'required'],
+            [['wasted_material_id', 'material_id', 'qty'], 'integer']
         ];
     }
 
@@ -41,7 +41,7 @@ class MaterialUsageDetail extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'material_usage_id' => 'Material Usage ID',
+            'wasted_material_id' => 'Wasted Material ID',
             'material_id' => 'Material ID',
             'qty' => 'Qty',
         ];
@@ -58,8 +58,8 @@ class MaterialUsageDetail extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getMaterialUsage()
+    public function getWastedMaterial()
     {
-        return $this->hasOne(MaterialUsage::className(), ['id' => 'material_usage_id']);
+        return $this->hasOne(WastedMaterial::className(), ['id' => 'wasted_material_id']);
     }
 }

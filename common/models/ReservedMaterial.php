@@ -1,26 +1,26 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use Yii;
 
 /**
- * This is the model class for table "material_accepted".
+ * This is the model class for table "reserved_material".
  *
  * @property integer $id
  * @property integer $created_at
  *
- * @property MaterialAcceptedDetail[] $materialAcceptedDetails
+ * @property ReservedMaterialDetail[] $reservedMaterialDetails
  * @property Material[] $materials
  */
-class MaterialAccepted extends \yii\db\ActiveRecord
+class ReservedMaterial extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'material_accepted';
+        return 'reserved_material';
     }
 
     /**
@@ -48,9 +48,9 @@ class MaterialAccepted extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getMaterialAcceptedDetails()
+    public function getReservedMaterialDetails()
     {
-        return $this->hasMany(MaterialAcceptedDetail::className(), ['material_accepted_id' => 'id']);
+        return $this->hasMany(ReservedMaterialDetail::className(), ['reserved_material_id' => 'id']);
     }
 
     /**
@@ -58,6 +58,6 @@ class MaterialAccepted extends \yii\db\ActiveRecord
      */
     public function getMaterials()
     {
-        return $this->hasMany(Material::className(), ['id' => 'material_id'])->viaTable('material_accepted_detail', ['material_accepted_id' => 'id']);
+        return $this->hasMany(Material::className(), ['id' => 'material_id'])->viaTable('reserved_material_detail', ['reserved_material_id' => 'id']);
     }
 }

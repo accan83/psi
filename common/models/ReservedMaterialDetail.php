@@ -1,26 +1,27 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use Yii;
 
 /**
- * This is the model class for table "stock".
+ * This is the model class for table "reserved_material_detail".
  *
+ * @property integer $reserved_material_id
  * @property integer $material_id
  * @property integer $qty
  *
  * @property Material $material
- * @property Material $material0
+ * @property ReservedMaterial $reservedMaterial
  */
-class Stock extends \yii\db\ActiveRecord
+class ReservedMaterialDetail extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'stock';
+        return 'reserved_material_detail';
     }
 
     /**
@@ -29,8 +30,8 @@ class Stock extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['qty'], 'required'],
-            [['qty'], 'integer']
+            [['reserved_material_id', 'material_id', 'qty'], 'required'],
+            [['reserved_material_id', 'material_id', 'qty'], 'integer']
         ];
     }
 
@@ -40,6 +41,7 @@ class Stock extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
+            'reserved_material_id' => 'Reserved Material ID',
             'material_id' => 'Material ID',
             'qty' => 'Qty',
         ];
@@ -56,8 +58,8 @@ class Stock extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getMaterial0()
+    public function getReservedMaterial()
     {
-        return $this->hasOne(Material::className(), ['id' => 'material_id']);
+        return $this->hasOne(ReservedMaterial::className(), ['id' => 'reserved_material_id']);
     }
 }

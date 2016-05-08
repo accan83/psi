@@ -1,28 +1,26 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use Yii;
 
 /**
- * This is the model class for table "product".
+ * This is the model class for table "stock".
  *
- * @property integer $order_id
  * @property integer $material_id
- * @property string $name
  * @property integer $qty
  *
  * @property Material $material
- * @property Order $order
+ * @property Material $material0
  */
-class Product extends \yii\db\ActiveRecord
+class Stock extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'product';
+        return 'stock';
     }
 
     /**
@@ -31,9 +29,8 @@ class Product extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'material_id', 'name', 'qty'], 'required'],
-            [['order_id', 'material_id', 'qty'], 'integer'],
-            [['name'], 'string', 'max' => 255]
+            [['qty'], 'required'],
+            [['qty'], 'integer']
         ];
     }
 
@@ -43,9 +40,7 @@ class Product extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'order_id' => 'Order ID',
             'material_id' => 'Material ID',
-            'name' => 'Name',
             'qty' => 'Qty',
         ];
     }
@@ -61,8 +56,8 @@ class Product extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getOrder()
+    public function getMaterial0()
     {
-        return $this->hasOne(Order::className(), ['id' => 'order_id']);
+        return $this->hasOne(Material::className(), ['id' => 'material_id']);
     }
 }
