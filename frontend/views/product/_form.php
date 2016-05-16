@@ -1,5 +1,7 @@
 <?php
 
+use common\models\Material;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -13,8 +15,8 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'material_id')->textInput() ?>
+    
+    <?= $form->field($model, 'material_id')->dropDownList(ArrayHelper::map(Material::find()->all(), 'id', 'code')) ?>
 
     <?= $form->field($model, 'qty')->textInput() ?>
 
