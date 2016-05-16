@@ -22,13 +22,17 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'customer',
             [
                 'attribute' => 'created_at',
                 'format' => ['date', 'php:d/m/Y']
             ],
 
-            ['class' => 'yii\grid\ActionColumn'],
+            'customer',
+
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'template' => '{view} {delete}'
+            ],
         ],
     ]); ?>
 

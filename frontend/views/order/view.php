@@ -15,6 +15,10 @@ $this->params['breadcrumbs'][] = '#' . $model->id;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
+    <p>
+        <?= Html::a('Edit Customer', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+    </p>
+
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
@@ -39,7 +43,39 @@ $this->params['breadcrumbs'][] = '#' . $model->id;
             'name',
             'qty',
 
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'template' => '{update} {delete}',
+                'buttons' => [
+                    'update' => function ($url, $model) {
+                        return Html::a('<span class="glyphicon glyphicon-pencil"></span>', [
+                            'product/update',
+                            'order_id' => $model->order_id,
+                            'material_id' => $model->material_id,
+                            'name' => $model->name
+                        ], [
+                            'title' => Yii::t('yii', 'Edit Product'),
+                        ]);
+
+                    },
+                    'delete' => function ($url, $model) {
+                        return Html::a('<span class="glyphicon glyphicon-trash"></span>', [
+                            'product/delete',
+                            'order_id' => $model->order_id,
+                            'material_id' => $model->material_id,
+                            'name' => $model->name,
+                        ], [
+                            'title' => Yii::t('yii', 'Edit Product'),
+//                            'data-method'=>'post',
+                            'data' => [
+                                'confirm' => 'Are you sure want to delete "' . $model->name . '"?',
+                                'method' => 'post',
+                            ],
+                        ]);
+
+                    }
+                ]
+            ],
         ],
     ]); ?>
 
