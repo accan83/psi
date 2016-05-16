@@ -91,7 +91,7 @@ class ProductController extends Controller
         $model = $this->findModel($order_id, $material_id, $name);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'order_id' => $model->order_id, 'material_id' => $model->material_id, 'name' => $model->name]);
+            return $this->redirect(['order/view', 'id' => $order_id]);
         } else {
             return $this->render('update', [
                 'model' => $model,
@@ -111,7 +111,7 @@ class ProductController extends Controller
     {
         $this->findModel($order_id, $material_id, $name)->delete();
 
-        return $this->redirect(['index']);
+        return $this->redirect(['order/view', 'id' => $order_id]);
     }
 
     /**
