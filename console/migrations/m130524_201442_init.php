@@ -163,18 +163,10 @@ class m130524_201442_init extends Migration
 
         // Tabel Permintaan Material
         $this->createTable('{{%requested_material}}', [
-            'id' => $this->integer()->notNull(),
+            'id' => $this->primaryKey(),
             'order_id' => $this->integer()->notNull(),
             'created_at' => $this->integer()->notNull(),
         ], $tableOptions);
-
-        $this->addPrimaryKey(
-          'pk_requested_material',
-          'requested_material', [
-            'id',
-            'order_id',
-          ]
-        );
 
         // Tabel Detil Permintaan Material
         $this->createTable('{{%requested_material_detail}}', [
