@@ -11,8 +11,9 @@ use yii\widgets\DetailView;
 /* @var $model common\models\RequestedMaterial */
 
 $order_id = Yii::$app->request->get('order_id');
-$this->title = $model->id;
+$this->title = 'Request ' . date('d M Y', $model->created_at);
 $this->params['breadcrumbs'][] = ['label' => 'Requested Materials', 'url' => ['index']];
+$this->params['breadcrumbs'][] = 'Order #' . $order_id;
 $this->params['breadcrumbs'][] = $this->title;
 
 $dataProvider = new ActiveDataProvider([
