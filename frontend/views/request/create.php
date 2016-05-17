@@ -11,8 +11,9 @@ use yii\helpers\Html;
 
 $order_id = Yii::$app->request->get('order_id');
 $model->order_id = $order_id;
-$this->title = 'Create Requested Material';
+$this->title = 'Create Request';
 $this->params['breadcrumbs'][] = ['label' => 'Requested Materials', 'url' => ['index']];
+$this->params['breadcrumbs'][] = 'Order #' . $order_id;
 $this->params['breadcrumbs'][] = $this->title;
 
 $dataProvider = new ActiveDataProvider([
