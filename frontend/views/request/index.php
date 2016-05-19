@@ -1,22 +1,19 @@
 <?php
 
+use common\models\RequestedMaterial;
+use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
 use kartik\grid\GridView;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Requested Materials';
+$this->title = 'Request Materials';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="requested-material-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
-        <?= Html::a('Create Requested Material', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
-
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -26,7 +23,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             [
                 'attribute' => 'created_at',
-                'format' => ['date', 'php:d/m/Y']
+                'format' => ['date', 'php:d M Y [H:i:s]']
             ],
 
             'customer',
@@ -41,7 +38,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     return GridView::ROW_COLLAPSED;
                 },
                 'detail' => function ($model, $key, $index, $column) {
+                    $requestedMaterial = RequestedMaterial::find()->where(['order_id' => $model->id])->orderBy(['created_at' => SORT_DESC])->all();
 
+                    return Yii::$app->controller->renderPartial('_allRequest', [
+//                        'dataProvider' => $dataProvider,
+                        'dataProvider' => $requestedMaterial,
+                        'order_id' => $model->id,
+                    ]);
                 }
             ],
 
