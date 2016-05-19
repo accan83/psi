@@ -1,6 +1,7 @@
 <?php
 
 use common\models\Product;
+use common\models\RequestedMaterial;
 use common\models\RequestedMaterialDetail;
 use yii\data\ActiveDataProvider;
 use yii\grid\GridView;
@@ -11,10 +12,12 @@ use yii\helpers\Html;
 
 $order_id = Yii::$app->request->get('order_id');
 $id = Yii::$app->request->get('id');
-$this->title = 'Update Requested Material: ' . ' ' . $id;
+$requestedMaterial = RequestedMaterial::find($id)->one();
+$this->title = 'Request ' . date('d M Y', $requestedMaterial->created_at) . ': Add Product';
 $this->params['breadcrumbs'][] = ['label' => 'Requested Materials', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $id, 'url' => ['view', 'id' => $id, 'order_id' => $order_id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = 'Order #' . $id;
+$this->params['breadcrumbs'][] = ['label' => 'Request ' . date('d M Y', $requestedMaterial->created_at), 'url' => ['view', 'id' => $id, 'order_id' => $order_id]];
+$this->params['breadcrumbs'][] = 'Add Material';
 
 $model->requested_material_id = $id;
 $dataProvider = new ActiveDataProvider([
