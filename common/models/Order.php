@@ -4,6 +4,7 @@ namespace common\models;
 
 use Yii;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 use yii\db\Expression;
 
 /**
@@ -13,11 +14,11 @@ use yii\db\Expression;
  * @property string $customer
  * @property integer $created_at
  *
- * @property MaterialUsage[] $materialUsages
+ * @property MaterialExpenditure[] $materialUsages
  * @property Product[] $products
  * @property RequestedMaterial[] $requestedMaterials
  */
-class Order extends \yii\db\ActiveRecord
+class Order extends ActiveRecord
 {
     /**
      * @inheritdoc
@@ -68,7 +69,7 @@ class Order extends \yii\db\ActiveRecord
      */
     public function getMaterialUsages()
     {
-        return $this->hasMany(MaterialUsage::className(), ['order_id' => 'id']);
+        return $this->hasMany(MaterialExpenditure::className(), ['order_id' => 'id']);
     }
 
     /**

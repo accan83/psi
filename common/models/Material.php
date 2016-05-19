@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "material".
@@ -14,8 +15,8 @@ use Yii;
  * @property Stock $id0
  * @property MaterialAcceptedDetail[] $materialAcceptedDetails
  * @property MaterialAccepted[] $materialAccepteds
- * @property MaterialUsageDetail[] $materialUsageDetails
- * @property MaterialUsage[] $materialUsages
+ * @property MaterialExpenditureDetail[] $materialUsageDetails
+ * @property MaterialExpenditure[] $materialUsages
  * @property Product[] $products
  * @property RequestedMaterialDetail[] $requestedMaterialDetails
  * @property RequestedMaterial[] $requestedMaterials
@@ -25,7 +26,7 @@ use Yii;
  * @property WastedMaterialDetail[] $wastedMaterialDetails
  * @property WastedMaterial[] $wastedMaterials
  */
-class Material extends \yii\db\ActiveRecord
+class Material extends ActiveRecord
 {
     /**
      * @inheritdoc
@@ -87,17 +88,17 @@ class Material extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getMaterialUsageDetails()
+    public function getMaterialExpenditureDetails()
     {
-        return $this->hasMany(MaterialUsageDetail::className(), ['material_id' => 'id']);
+        return $this->hasMany(MaterialExpenditureDetail::className(), ['material_id' => 'id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getMaterialUsages()
+    public function getMaterialExpenditures()
     {
-        return $this->hasMany(MaterialUsage::className(), ['id' => 'material_usage_id'])->viaTable('material_usage_detail', ['material_id' => 'id']);
+        return $this->hasMany(MaterialExpenditure::className(), ['id' => 'material_expenditure_id'])->viaTable('material_expenditure_detail', ['material_id' => 'id']);
     }
 
     /**
