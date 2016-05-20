@@ -22,7 +22,7 @@ class MaterialExpenditureDetail extends ActiveRecord
      */
     public static function tableName()
     {
-        return 'material_usage_detail';
+        return 'material_expenditure_detail';
     }
 
     /**
