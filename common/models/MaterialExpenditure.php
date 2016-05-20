@@ -49,8 +49,8 @@ class MaterialExpenditure extends ActiveRecord
     public function rules()
     {
         return [
-            [['order_id'], 'required'],
-            [['order_id'], 'integer']
+            [['requested_material_id'], 'required'],
+            [['requested_material_id'], 'integer']
         ];
     }
 
@@ -61,7 +61,7 @@ class MaterialExpenditure extends ActiveRecord
     {
         return [
             'id' => 'ID',
-            'order_id' => 'Order ID',
+            'requested_material_id' => 'Requested Material ID',
             'created_at' => 'Created At',
         ];
     }
@@ -69,9 +69,9 @@ class MaterialExpenditure extends ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getOrder()
+    public function getRequestedMaterial()
     {
-        return $this->hasOne(Order::className(), ['id' => 'order_id']);
+        return $this->hasOne(RequestedMaterial::className(), ['id' => 'requested_material_id']);
     }
 
     /**
