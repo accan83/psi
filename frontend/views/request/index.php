@@ -22,11 +22,15 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             [
+                'label' => 'Order Created',
                 'attribute' => 'created_at',
                 'format' => ['date', 'php:d M Y [H:i:s]']
             ],
 
-            'customer',
+            [
+                'label' => 'Customer Name',
+                'attribute' => 'customer',
+            ],
 
             [
                 'class' => 'kartik\grid\ExpandRowColumn',
