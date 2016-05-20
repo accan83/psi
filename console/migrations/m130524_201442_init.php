@@ -89,7 +89,7 @@ class m130524_201442_init extends Migration
         // Tabel Pengeluaran Material
         $this->createTable('{{%material_expenditure}}', [
             'id' => $this->primaryKey(),
-            'order_id' => $this->integer()->notNull(),
+            'requested_material_id' => $this->integer()->notNull(),
             'created_at' => $this->integer()->notNull(),
         ], $tableOptions);
 
@@ -284,12 +284,12 @@ class m130524_201442_init extends Migration
             'RESTRICT'
         );
 
-        // Tabel Pengeluaran Material ke Order
+        // Tabel Pengeluaran Material ke Permintaan Material
         $this->addForeignKey(
-            'expenditure_have_order',
+            'expenditure_have_requested',
             '{{%material_expenditure}}',
-            'order_id',
-            '{{%order}}',
+            'requested_material_id',
+            '{{%requested_material}}',
             'id',
             'RESTRICT',
             'RESTRICT'
@@ -410,9 +410,9 @@ class m130524_201442_init extends Migration
             '{{%wasted_material}}'
         );
 
-        // Tabel Pengeluaran Material ke Order
+        // Tabel Pengeluaran Material ke Permintaan
         $this->dropForeignKey(
-            'expenditure_have_order',
+            'expenditure_have_requested',
             '{{%material_expenditure}}'
         );
 
