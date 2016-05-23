@@ -10,13 +10,12 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model common\models\MaterialExpenditure */
 
-$requested_id = Yii::$app->request->get('requested_material_id');
-$this->title = $model->id;
+$this->title = 'Expenditure ' . date('d M Y', $model->created_at);
 $this->params['breadcrumbs'][] = ['label' => 'Material Expenditures', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
 $dataProvider = new ActiveDataProvider([
-    'query' => RequestedMaterialDetail::find()->where(['requested_material_id' => $requested_id]),
+    'query' => RequestedMaterialDetail::find()->where(['requested_material_id' => $requested_material_id]),
 ]);
 
 $dataProvider2 = new ActiveDataProvider([
@@ -25,7 +24,7 @@ $dataProvider2 = new ActiveDataProvider([
 ?>
 <div class="material-expenditure-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h1>Requested Material</h1>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -40,20 +39,27 @@ $dataProvider2 = new ActiveDataProvider([
                 'template' => '{create}',
                 'buttons' => [
                     'create' => function ($url, $model) {
-                        $requested_id = Yii::$app->request->get('requested_material_id');
-                        return Html::a('<span class="glyphicon glyphicon-new-window"></span>', [
-                            'expenditure/update',
-                            'id' => $requested_id,
-                        ], [
-                            'title' => Yii::t('yii', 'Create Request Material'),
-                        ]);
+                        $id = Yii::$app->request->get('id');
+                        $approved = MaterialExpenditureDetail::find()->where(['material_expenditure_id' => $id, 'material_id' => $model->material_id])->one();
+                        if (count($approved) == 0) {
+                            return Html::a('<span class="glyphicon glyphicon-ok"></span>', [
+                                'expenditure/update',
+                                'id' => $id,
+                                'material_id' => $model->material_id,
+                            ], [
+                                'title' => Yii::t('yii', 'Approve Expenditure'),
+                            ]);
+                        }
+                        else {
+                            return '';
+                        }
                     }
                 ]
             ],
         ],
     ]); ?>
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h1>Approved Material</h1>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider2,
