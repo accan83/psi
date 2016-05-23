@@ -62,7 +62,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     return Yii::$app->controller->renderPartial('_allExpenditure', [
 //                        'dataProvider' => $dataProvider,
                         'dataProvider' => $materialExpenditure,
-                        'order_id' => $model->id,
+                        'requested_material_id' => $model->id,
                     ]);
                 }
             ],
