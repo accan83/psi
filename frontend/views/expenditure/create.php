@@ -10,16 +10,14 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model common\models\MaterialExpenditure */
 
-$requested_id = Yii::$app->request->get('requested_material_id');
-$model->requested_material_id = $requested_id;
-$requested = RequestedMaterial::find($requested_id)->one();
 $this->title = 'Create Expenditure';
 $this->params['breadcrumbs'][] = ['label' => 'Material Expenditures', 'url' => ['index']];
 $this->params['breadcrumbs'][] = 'Request ' . date('d M Y', $requested->created_at);
 $this->params['breadcrumbs'][] = $this->title;
+$model->requested_material_id = $requested->id;
 
 $dataProvider = new ActiveDataProvider([
-    'query' => RequestedMaterialDetail::find()->where(['requested_material_id' => $requested_id]),
+    'query' => RequestedMaterialDetail::find()->where(['requested_material_id' => $requested->id]),
 ]);
 ?>
 <div class="material-expenditure-create">
