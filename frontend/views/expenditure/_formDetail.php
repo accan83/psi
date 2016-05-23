@@ -15,15 +15,20 @@ use yii\widgets\ActiveForm;
     
     <?php $form = ActiveForm::begin(); ?>
     
-    <?= $form->field($model, 'requested_material_id')->hiddenInput()->label('') ?>
+    <div class="form-group">
+        <label class="control-label">Material Code</label>
+        <input type="text" class="form-control" value="<?= $material->code ?>" disabled />
+    </div>
 
-    <?= $form->field($model, 'material_id')->dropDownList(ArrayHelper::map(Material::find()->all(), 'id', 'code')) ?>
-
-    <?= $form->field($model, 'qty')->textInput() ?>
+    <?= $form->field($model, 'qty')->textInput(['type' => 'number', 'max' => $model->qty, 'min' => 1]) ?>
 
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton($model->isNewRecord ? 'Approve' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>
+
+    <?= $form->field($model, 'material_expenditure_id')->hiddenInput()->label(false) ?>
+
+    <?= $form->field($model, 'material_id')->hiddenInput()->label(false) ?>
 
     <?php ActiveForm::end(); ?>
 

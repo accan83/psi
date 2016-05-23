@@ -6,6 +6,7 @@
  * Time: 17:15
  */
 
+use common\models\MaterialExpenditureDetail;
 use common\models\RequestedMaterialDetail;
 use yii\data\ActiveDataProvider;
 use yii\grid\GridView;
@@ -17,11 +18,11 @@ use yii\helpers\Html;
 //    print_r($dataProvider);
     foreach ($dataProvider as $data) {
     ?>
-        <?= Html::a('Edit Request', ['request/view', 'id' => $data->id, 'order_id' => $order_id], ['class'=>'btn btn-primary btn-sm pull-right']) ?>
+        <?= Html::a('Edit Expenditure', ['expenditure/view', 'id' => $data->id, 'requested_material_id' => $requested_material_id], ['class'=>'btn btn-primary btn-sm pull-right']) ?>
         <h3><?= date("d M Y [H:i:s]", $data->created_at); ?></h3>
         <?php
         $dataProvider2 = new ActiveDataProvider([
-            'query' => RequestedMaterialDetail::find()->where(['requested_material_id' => $data->id]),
+            'query' => MaterialExpenditureDetail::find()->where(['material_expenditure_id' => $data->id]),
         ]);
         echo GridView::widget([
             'dataProvider' => $dataProvider2,
