@@ -44,6 +44,7 @@ class m130524_201442_init extends Migration
         // Tabel Penerimaan Material
         $this->createTable('{{%material_accepted}}', [
             'id' => $this->primaryKey(),
+            'reserved_material_id' => $this->integer()->notNull(),
             'created_at' => $this->integer()->notNull(),
         ], $tableOptions);
 
@@ -207,6 +208,17 @@ class m130524_201442_init extends Migration
             'RESTRICT'
         );
 
+        // Tabel Penerimaan Material ke Pemesanan Material
+        $this->addForeignKey(
+            'accept_have_reserved',
+            '{{%material_accepted}}',
+            'reserved_material_id',
+            '{{%reserved_material}}',
+            'id',
+            'RESTRICT',
+            'RESTRICT'
+        );
+
         // Tabel Detil Pemesanan Material ke Pemesanan Material
         $this->addForeignKey(
             'reserved_detail_have_reserved_material',
@@ -353,6 +365,13 @@ class m130524_201442_init extends Migration
 
     public function down()
     {
+
+
+        $this->dropForeignKey(
+            'accept_have_reserved',
+            '{{%material_accepted}}'
+        );
+
         $this->dropForeignKey(
             'material_have_stock',
             '{{%stock}}'

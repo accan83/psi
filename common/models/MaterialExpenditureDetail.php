@@ -31,8 +31,8 @@ class MaterialExpenditureDetail extends ActiveRecord
     public function rules()
     {
         return [
-            [['material_usage_id', 'material_id', 'qty'], 'required'],
-            [['material_usage_id', 'material_id', 'qty'], 'integer']
+            [['material_expenditure_id', 'material_id', 'qty'], 'required'],
+            [['material_expenditure_id', 'material_id', 'qty'], 'integer']
         ];
     }
 
@@ -59,8 +59,8 @@ class MaterialExpenditureDetail extends ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getMaterialUsage()
+    public function getMaterialExpenditure()
     {
-        return $this->hasOne(MaterialExpenditure::className(), ['id' => 'material_usage_id']);
+        return $this->hasOne(MaterialExpenditure::className(), ['id' => 'material_expenditure_id']);
     }
 }

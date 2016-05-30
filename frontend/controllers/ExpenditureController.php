@@ -2,7 +2,10 @@
 
 namespace frontend\controllers;
 
+use common\models\Material;
+use common\models\MaterialExpenditureDetail;
 use common\models\RequestedMaterial;
+use common\models\RequestedMaterialDetail;
 use Yii;
 use common\models\MaterialExpenditure;
 use yii\data\ActiveDataProvider;
@@ -45,12 +48,16 @@ class ExpenditureController extends Controller
     /**
      * Displays a single MaterialExpenditure model.
      * @param integer $id
+     * @param $requested_material_id
      * @return mixed
+     * @throws NotFoundHttpException
+     * @internal param $requested_id
      */
-    public function actionView($id)
+    public function actionView($id, $requested_material_id)
     {
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'requested_material_id' => $requested_material_id,
         ]);
     }
 
@@ -59,25 +66,17 @@ class ExpenditureController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($requested_material_id)
     {
-//        $model = new RequestedMaterial();
-//
-//        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-//            return $this->redirect(['view', 'id' => $model->id, 'order_id' => $model->order_id]);
-//        } else {
-//            return $this->render('create', [
-//                'model' => $model,
-//            ]);
-//        }
-
         $model = new MaterialExpenditure();
+        $requested = RequestedMaterial::find()->where(['id', $requested_material_id])->one();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'id' => $model->id, 'requested_material_id' => $requested_material_id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
+                'requested' => $requested,
             ]);
         }
     }
@@ -88,17 +87,46 @@ class ExpenditureController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionUpdate($id)
+    public function actionUpdate($id, $material_id)
     {
-        $model = $this->findModel($id);
+        $model = new MaterialExpenditureDetail();
+        $materialExpenditure = MaterialExpenditure::find()->where(['id' => $id])->one();
+        $material = Material::find()->where(['id' => $material_id])->one();
+        $requestedMaterial = RequestedMaterialDetail::find()->where(['requested_material_id' => $materialExpenditure->requested_material_id, 'material_id' => $material->id])->one();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
+        if ($model->load(Yii::$app->request->post())) {
+            $stock = $material->stock->qty;
+            $safetyStock = $material->safety_stock;
+            if ($stock - $model->qty >= $safetyStock) {
+                if ($model->save()) {
+                    return $this->redirect(['view', 'id' => $materialExpenditure->id, 'requested_material_id' => $materialExpenditure->requested_material_id]);
+                }
+            }
+            else {
+                $message = 'Sorry stock material is not available.';
+
+                if ($stock > $safetyStock) {
+                    $available = intval($stock - $safetyStock);
+                    $message .= ' You can only use ' . $available;
+                }
+
+                Yii::$app->getSession()->setFlash('error', $message);
+                return $this->render('update', [
+                    'model' => $model,
+                    'materialExpenditure' => $materialExpenditure,
+                    'material' => $material,
+                ]);
+            }
         }
+
+        $model->material_expenditure_id = $id;
+        $model->material_id = $material_id;
+        $model->qty = $requestedMaterial->qty;
+        return $this->render('update', [
+            'model' => $model,
+            'materialExpenditure' => $materialExpenditure,
+            'material' => $material,
+        ]);
     }
 
     /**
