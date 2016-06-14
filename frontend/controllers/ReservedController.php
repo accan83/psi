@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\Material;
 use Yii;
 use common\models\ReservedMaterial;
 use yii\data\ActiveDataProvider;
@@ -36,8 +37,13 @@ class ReservedController extends Controller
             'query' => ReservedMaterial::find(),
         ]);
 
+        $dataProvider2 = new ActiveDataProvider([
+            'query' => Material::find(),
+        ]);
+
         return $this->render('index', [
             'dataProvider' => $dataProvider,
+            'dataProvider2' => $dataProvider2,
         ]);
     }
 

@@ -1,5 +1,6 @@
 <?php
 
+use frontend\controllers\ExpenditureController;
 use yii\helpers\Html;
 use yii\grid\GridView;
 
@@ -13,20 +14,60 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a('Create Reserved Material', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+    <div class="row">
+        <div class="col-md-5">
+            <?= GridView::widget([
+                'dataProvider' => $dataProvider2,
+                'columns' => [
+                    ['class' => 'yii\grid\SerialColumn'],
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+                    'code',
 
-            'id',
-            'created_at',
+                    [
+                        'label' => 'Safety Stock',
+                        'attribute' => 'safety_stock',
+                        'value' => function ($model, $key, $index, $column) {
+                            return $model->safety_stock . 'kg';
+                        },
+                    ],
 
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
+                    [
+                        'label' => 'Stock',
+                        'attribute' => 'stock.qty',
+                        'value' => function ($model, $key, $index, $column) {
+                            return $model->stock->qty . 'kg';
+                        },
+                    ],
+
+                    [
+                        'label' => 'ROP',
+                        'value' => function ($model, $key, $index, $column) {
+                            return ExpenditureController::getReOrderPoint($model->id) . 'kg';
+                        },
+                    ]
+                ],
+            ]); ?>
+        </div>
+        <div class="col-md-7">
+            <p>
+                <?= Html::a('Create Reserved Material', ['create'], ['class' => 'btn btn-success']) ?>
+            </p>
+
+            <?= GridView::widget([
+                'dataProvider' => $dataProvider,
+                'columns' => [
+                    ['class' => 'yii\grid\SerialColumn'],
+
+                    [
+                        'label' => 'Reserved Created',
+                        'attribute' => 'created_at',
+                        'format' => ['date', 'php:d M Y [H:i:s]']
+                    ],
+
+                    ['class' => 'yii\grid\ActionColumn'],
+                ],
+            ]); ?>
+        </div>
+    </div>
 
 </div>
