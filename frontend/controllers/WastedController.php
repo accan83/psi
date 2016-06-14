@@ -2,6 +2,11 @@
 
 namespace frontend\controllers;
 
+use common\models\Material;
+use common\models\MaterialExpenditure;
+use common\models\MaterialExpenditureDetail;
+use common\models\Stock;
+use common\models\WastedMaterialDetail;
 use Yii;
 use common\models\WastedMaterial;
 use yii\data\ActiveDataProvider;
@@ -33,7 +38,7 @@ class WastedController extends Controller
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => WastedMaterial::find(),
+            'query' => MaterialExpenditure::find(),
         ]);
 
         return $this->render('index', [
@@ -46,10 +51,11 @@ class WastedController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionView($id)
+    public function actionView($id, $material_expenditure_id)
     {
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'material_expenditure_id' => $material_expenditure_id,
         ]);
     }
 
@@ -58,15 +64,17 @@ class WastedController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($material_expenditure_id)
     {
         $model = new WastedMaterial();
+        $requested = MaterialExpenditure::find()->where(['id' => $material_expenditure_id])->one();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'id' => $model->id, 'material_expenditure_id' => $material_expenditure_id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
+                'requested' => $requested,
             ]);
         }
     }
@@ -77,17 +85,31 @@ class WastedController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionUpdate($id)
+    public function actionUpdate($id, $material_id)
     {
-        $model = $this->findModel($id);
+        $model = new WastedMaterialDetail();
+        $wastedMaterial = WastedMaterial::find()->where(['id' => $id])->one();
+        $material = Material::find()->where(['id' => $material_id])->one();
+        $materialExpenditure = MaterialExpenditureDetail::find()->where(['material_expenditure_id' => $wastedMaterial->material_expenditure_id, 'material_id' => $material->id])->one();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
+        if ($model->load(Yii::$app->request->post())) {
+            $stock = $material->stock->qty;
+            if ($model->save()) {
+                $mStock = Stock::find()->where(['material_id' => $material_id])->one();
+                $mStock->qty = $stock + $model->qty;
+                $mStock->save();
+                return $this->redirect(['view', 'id' => $wastedMaterial->id, 'material_expenditure_id' => $wastedMaterial->material_expenditure_id]);
+            }
         }
+
+        $model->wasted_material_id = $id;
+        $model->material_id = $material_id;
+        $model->qty = $materialExpenditure->qty;
+        return $this->render('update', [
+            'model' => $model,
+            'wastedMaterial' => $wastedMaterial,
+            'material' => $material,
+        ]);
     }
 
     /**
