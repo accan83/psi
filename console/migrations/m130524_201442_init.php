@@ -44,6 +44,7 @@ class m130524_201442_init extends Migration
         // Tabel Penerimaan Material
         $this->createTable('{{%material_accepted}}', [
             'id' => $this->primaryKey(),
+            'reserved_material_id' => $this->integer()->notNull(),
             'created_at' => $this->integer()->notNull(),
         ], $tableOptions);
 
@@ -86,34 +87,24 @@ class m130524_201442_init extends Migration
             'created_at' => $this->integer()->notNull(),
         ], $tableOptions);
 
-        // Tabel Penggunaan Material
-        $this->createTable('{{%material_usage}}', [
-            'id' => $this->integer()->notNull(),
-            'order_id' => $this->integer()->notNull(),
-            'wasted_material_id' => $this->integer()->notNull(),
+        // Tabel Pengeluaran Material
+        $this->createTable('{{%material_expenditure}}', [
+            'id' => $this->primaryKey(),
+            'requested_material_id' => $this->integer()->notNull(),
             'created_at' => $this->integer()->notNull(),
         ], $tableOptions);
 
-        $this->addPrimaryKey(
-          'pk_material_usage',
-          'material_usage', [
-            'id',
-            'order_id',
-            'wasted_material_id',
-          ]
-        );
-
-        // Tabel Detil Penggunaan Material
-        $this->createTable('{{%material_usage_detail}}', [
-            'material_usage_id' => $this->integer()->notNull(),
+        // Tabel Detil Pengeluaran Material
+        $this->createTable('{{%material_expenditure_detail}}', [
+            'material_expenditure_id' => $this->integer()->notNull(),
             'material_id' => $this->integer()->notNull(),
             'qty' => $this->integer()->notNull(),
         ], $tableOptions);
 
         $this->addPrimaryKey(
-          'pk_material_usage_detail',
-          'material_usage_detail', [
-            'material_usage_id',
+          'pk_material_expenditure_detail',
+          'material_expenditure_detail', [
+            'material_expenditure_id',
             'material_id',
           ]
         );
@@ -121,7 +112,7 @@ class m130524_201442_init extends Migration
         // Tabel Sisa Material
         $this->createTable('{{%wasted_material}}', [
             'id' => $this->primaryKey(),
-            'material_usage_id' => $this->integer()->notNull(),
+            'material_expenditure_id' => $this->integer()->notNull(),
             'created_at' => $this->integer()->notNull(),
         ], $tableOptions);
 
@@ -163,18 +154,10 @@ class m130524_201442_init extends Migration
 
         // Tabel Permintaan Material
         $this->createTable('{{%requested_material}}', [
-            'id' => $this->integer()->notNull(),
+            'id' => $this->primaryKey(),
             'order_id' => $this->integer()->notNull(),
             'created_at' => $this->integer()->notNull(),
         ], $tableOptions);
-
-        $this->addPrimaryKey(
-          'pk_requested_material',
-          'requested_material', [
-            'id',
-            'order_id',
-          ]
-        );
 
         // Tabel Detil Permintaan Material
         $this->createTable('{{%requested_material_detail}}', [
@@ -225,6 +208,17 @@ class m130524_201442_init extends Migration
             'RESTRICT'
         );
 
+        // Tabel Penerimaan Material ke Pemesanan Material
+        $this->addForeignKey(
+            'accept_have_reserved',
+            '{{%material_accepted}}',
+            'reserved_material_id',
+            '{{%reserved_material}}',
+            'id',
+            'RESTRICT',
+            'RESTRICT'
+        );
+
         // Tabel Detil Pemesanan Material ke Pemesanan Material
         $this->addForeignKey(
             'reserved_detail_have_reserved_material',
@@ -247,21 +241,21 @@ class m130524_201442_init extends Migration
             'RESTRICT'
         );
 
-        // Tabel Detil Penggunaan Material ke Penggunaan Material
+        // Tabel Detil Pengeluaran Material ke Pengeluaran Material
         $this->addForeignKey(
-            'usage_detail_have_usage_material',
-            '{{%material_usage_detail}}',
-            'material_usage_id',
-            '{{%material_usage}}',
+            'expenditure_detail_have_expenditure_material',
+            '{{%material_expenditure_detail}}',
+            'material_expenditure_id',
+            '{{%material_expenditure}}',
             'id',
             'RESTRICT',
             'RESTRICT'
         );
 
-        // Tabel Detil Penggunaan Material ke Material
+        // Tabel Detil Pengeluaran Material ke Material
         $this->addForeignKey(
-            'usage_detail_have_material',
-            '{{%material_usage_detail}}',
+            'expenditure_detail_have_material',
+            '{{%material_expenditure_detail}}',
             'material_id',
             '{{%material}}',
             'id',
@@ -291,34 +285,23 @@ class m130524_201442_init extends Migration
             'RESTRICT'
         );
 
-        // Tabel Sisa Material ke Penggunaan Material
+        // Tabel Sisa Material ke Pengeluaran Material
         $this->addForeignKey(
-            'wasted_have_usage',
+            'wasted_have_expenditure',
             '{{%wasted_material}}',
-            'material_usage_id',
-            '{{%material_usage}}',
+            'material_expenditure_id',
+            '{{%material_expenditure}}',
             'id',
             'RESTRICT',
             'RESTRICT'
         );
 
-        // Tabel Penggunaan Material ke Sisa Material
+        // Tabel Pengeluaran Material ke Permintaan Material
         $this->addForeignKey(
-          'usage_have_wasted',
-          '{{%material_usage}}',
-          'wasted_material_id',
-          '{{%wasted_material}}',
-          'id',
-            'RESTRICT',
-            'RESTRICT'
-        );
-
-        // Tabel Penggunaan Material ke Order
-        $this->addForeignKey(
-            'usage_have_order',
-            '{{%material_usage}}',
-            'order_id',
-            '{{%order}}',
+            'expenditure_have_requested',
+            '{{%material_expenditure}}',
+            'requested_material_id',
+            '{{%requested_material}}',
             'id',
             'RESTRICT',
             'RESTRICT'
@@ -382,6 +365,13 @@ class m130524_201442_init extends Migration
 
     public function down()
     {
+
+
+        $this->dropForeignKey(
+            'accept_have_reserved',
+            '{{%material_accepted}}'
+        );
+
         $this->dropForeignKey(
             'material_have_stock',
             '{{%stock}}'
@@ -409,16 +399,16 @@ class m130524_201442_init extends Migration
             '{{%reserved_material_detail}}'
         );
 
-        // Tabel Detil Penggunaan Material ke Penggunaan Material
+        // Tabel Detil Pengeluaran Material ke Pengeluaran Material
         $this->dropForeignKey(
-            'usage_detail_have_usage_material',
-            '{{%material_usage_detail}}'
+            'expenditure_detail_have_expenditure_material',
+            '{{%material_expenditure_detail}}'
         );
 
-        // Tabel Detil Penggunaan Material ke Material
+        // Tabel Detil Pengeluaran Material ke Material
         $this->dropForeignKey(
-            'usage_detail_have_material',
-            '{{%material_usage_detail}}'
+            'expenditure_detail_have_material',
+            '{{%material_expenditure_detail}}'
         );
 
         // Tabel Detil Sisa Material ke Sisa Material
@@ -433,22 +423,16 @@ class m130524_201442_init extends Migration
             '{{%wasted_material_detail}}'
         );
 
-        // Tabel Sisa Material ke Penggunaan Material
+        // Tabel Sisa Material ke Pengeluaran Material
         $this->dropForeignKey(
-            'wasted_have_usage',
+            'wasted_have_expenditure',
             '{{%wasted_material}}'
         );
 
-        // Tabel Penggunaan Material ke Sisa Material
+        // Tabel Pengeluaran Material ke Permintaan
         $this->dropForeignKey(
-          'usage_have_wasted',
-          '{{%material_usage}}'
-        );
-
-        // Tabel Penggunaan Material ke Order
-        $this->dropForeignKey(
-            'usage_have_order',
-            '{{%material_usage}}'
+            'expenditure_have_requested',
+            '{{%material_expenditure}}'
         );
 
         // Tabel Barang ke Material
@@ -488,8 +472,8 @@ class m130524_201442_init extends Migration
         $this->dropTable('{{%material}}');
         $this->dropTable('{{%product}}');
         $this->dropTable('{{%order}}');
-        $this->dropTable('{{%material_usage}}');
-        $this->dropTable('{{%material_usage_detail}}');
+        $this->dropTable('{{%material_expenditure}}');
+        $this->dropTable('{{%material_expenditure_detail}}');
         $this->dropTable('{{%wasted_material}}');
         $this->dropTable('{{%wasted_material_detail}}');
         $this->dropTable('{{%reserved_material}}');

@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "wasted_material".
@@ -11,8 +12,8 @@ use Yii;
  * @property integer $material_usage_id
  * @property integer $created_at
  *
- * @property MaterialUsage[] $materialUsages
- * @property MaterialUsage $materialUsage
+ * @property MaterialExpenditure[] $materialUsages
+ * @property MaterialExpenditure $materialUsage
  * @property WastedMaterialDetail[] $wastedMaterialDetails
  * @property Material[] $materials
  */
@@ -29,11 +30,25 @@ class WastedMaterial extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::className(),
+                'createdAtAttribute' => 'created_at',
+                'updatedAtAttribute' => 'created_at',
+            ],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function rules()
     {
         return [
-            [['material_usage_id', 'created_at'], 'required'],
-            [['material_usage_id', 'created_at'], 'integer']
+            [['material_expenditure_id'], 'required'],
+            [['material_expenditure_id'], 'integer']
         ];
     }
 
@@ -54,7 +69,7 @@ class WastedMaterial extends \yii\db\ActiveRecord
      */
     public function getMaterialUsages()
     {
-        return $this->hasMany(MaterialUsage::className(), ['wasted_material_id' => 'id']);
+        return $this->hasMany(MaterialExpenditure::className(), ['wasted_material_id' => 'id']);
     }
 
     /**
@@ -62,7 +77,7 @@ class WastedMaterial extends \yii\db\ActiveRecord
      */
     public function getMaterialUsage()
     {
-        return $this->hasOne(MaterialUsage::className(), ['id' => 'material_usage_id']);
+        return $this->hasOne(MaterialExpenditure::className(), ['id' => 'material_usage_id']);
     }
 
     /**

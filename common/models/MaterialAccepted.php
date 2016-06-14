@@ -29,8 +29,8 @@ class MaterialAccepted extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['created_at'], 'required'],
-            [['created_at'], 'integer']
+            [['reserved_material_id', 'created_at'], 'required'],
+            [['reserved_material_id', 'created_at'], 'integer']
         ];
     }
 
@@ -43,6 +43,14 @@ class MaterialAccepted extends \yii\db\ActiveRecord
             'id' => 'ID',
             'created_at' => 'Created At',
         ];
+    }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getReservedMaterial()
+    {
+        return $this->hasOne(ReservedMaterial::className(), ['id' => 'reserved_material_id']);
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "requested_material".
@@ -28,11 +29,25 @@ class RequestedMaterial extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::className(),
+                'createdAtAttribute' => 'created_at',
+                'updatedAtAttribute' => 'created_at',
+            ],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function rules()
     {
         return [
-            [['id', 'order_id', 'created_at'], 'required'],
-            [['id', 'order_id', 'created_at'], 'integer']
+            [['order_id'], 'required'],
+            [['order_id'], 'integer']
         ];
     }
 
