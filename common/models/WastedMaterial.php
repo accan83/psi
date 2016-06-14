@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "wasted_material".
@@ -29,11 +30,25 @@ class WastedMaterial extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::className(),
+                'createdAtAttribute' => 'created_at',
+                'updatedAtAttribute' => 'created_at',
+            ],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function rules()
     {
         return [
-            [['material_usage_id', 'created_at'], 'required'],
-            [['material_usage_id', 'created_at'], 'integer']
+            [['material_expenditure_id'], 'required'],
+            [['material_expenditure_id'], 'integer']
         ];
     }
 
