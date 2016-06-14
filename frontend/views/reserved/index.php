@@ -1,8 +1,11 @@
 <?php
 
+use common\models\ReservedMaterialDetail;
 use frontend\controllers\ExpenditureController;
+use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
-use yii\grid\GridView;
+//use yii\grid\GridView;
+use kartik\grid\GridView;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -18,6 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-md-5">
             <?= GridView::widget([
                 'dataProvider' => $dataProvider2,
+                'export' => false,
                 'columns' => [
                     ['class' => 'yii\grid\SerialColumn'],
 
@@ -55,6 +59,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <?= GridView::widget([
                 'dataProvider' => $dataProvider,
+                'export' => false,
                 'columns' => [
                     ['class' => 'yii\grid\SerialColumn'],
 
@@ -64,7 +69,26 @@ $this->params['breadcrumbs'][] = $this->title;
                         'format' => ['date', 'php:d M Y [H:i:s]']
                     ],
 
-                    ['class' => 'yii\grid\ActionColumn'],
+                    [
+                        'class' => 'kartik\grid\ExpandRowColumn',
+                        'expandIcon' => '<span class="glyphicon glyphicon-chevron-down"></span>',
+                        'collapseIcon' => '<span class="glyphicon glyphicon-chevron-up"></span>',
+                        'expandTitle' => 'Show All Requested Material',
+                        'collapseTitle' => 'Hide All Requested Material',
+                        'value' => function ($model, $key, $index, $column) {
+                            return GridView::ROW_COLLAPSED;
+                        },
+                        'detail' => function ($model, $key, $index, $column) {
+                            $dataProvider = new ActiveDataProvider([
+                                'query' => ReservedMaterialDetail::find()->where(['reserved_material_id' => $model->id]),
+                            ]);
+
+                            return Yii::$app->controller->renderPartial('_allReserved', [
+//                        'dataProvider' => $dataProvider,
+                                'dataProvider' => $dataProvider,
+                            ]);
+                        }
+                    ],
                 ],
             ]); ?>
         </div>
