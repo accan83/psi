@@ -1,7 +1,6 @@
 <?php
 
 use common\models\MaterialExpenditure;
-use common\models\RequestedMaterial;
 use common\models\RequestedMaterialDetail;
 use kartik\grid\GridView;
 use yii\helpers\Html;
@@ -31,7 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'label' => 'Total Requested',
                 'value' => function ($model, $key) {
-                    $detail = RequestedMaterialDetail::find($model->id)->all();
+                    $detail = RequestedMaterialDetail::find()->where(['requested_material_id' => $model->id])->all();
                     $result = '';
                     foreach ($detail as $idx => $data) {
                         if ($idx != 0) {
