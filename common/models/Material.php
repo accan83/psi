@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use frontend\controllers\ExpenditureController;
 use Yii;
 use yii\db\ActiveRecord;
 
@@ -155,5 +156,19 @@ class Material extends ActiveRecord
     public function getWastedMaterials()
     {
         return $this->hasMany(WastedMaterial::className(), ['id' => 'wasted_material_id'])->viaTable('wasted_material_detail', ['material_id' => 'id']);
+    }
+    
+    public static function getTouchROP() {
+        $material = Material::find()->all();
+        $ids = array();
+        
+        foreach ($material as $m) {
+            $rop = ExpenditureController::getReOrderPoint($m->id);
+            if ($m->stock->qty <= $rop) {
+                array_push($ids, $m->id);
+            }
+        }
+
+        return Material::find()->where(['id' => $ids])->all();
     }
 }

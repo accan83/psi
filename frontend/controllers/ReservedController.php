@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\models\Material;
+use common\models\ReservedMaterialDetail;
 use Yii;
 use common\models\ReservedMaterial;
 use yii\data\ActiveDataProvider;
@@ -54,8 +55,13 @@ class ReservedController extends Controller
      */
     public function actionView($id)
     {
+        $dataProvider = new ActiveDataProvider([
+            'query' => ReservedMaterialDetail::find()->where(['reserved_material_id' => $id]),
+        ]);
+
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'dataProvider' => $dataProvider,
         ]);
     }
 
@@ -66,10 +72,15 @@ class ReservedController extends Controller
      */
     public function actionCreate()
     {
-        $model = new ReservedMaterial();
+        $model = new ReservedMaterialDetail();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+            $model2 = new ReservedMaterial();
+            $model2->save();
+            $model->reserved_material_id = $model2->id;
+            $model->save();
+//            return 'sukses';
+            return $this->redirect(['view', 'id' => $model2->id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -85,7 +96,8 @@ class ReservedController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model = new ReservedMaterialDetail();
+        $model->reserved_material_id = $id;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
