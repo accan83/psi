@@ -30,7 +30,7 @@ class ReservedMaterialDetail extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['reserved_material_id', 'material_id', 'qty'], 'required'],
+            [['material_id', 'qty'], 'required'],
             [['reserved_material_id', 'material_id', 'qty'], 'integer']
         ];
     }
