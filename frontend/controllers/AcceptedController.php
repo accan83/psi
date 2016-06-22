@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\ReservedMaterial;
 use Yii;
 use common\models\MaterialAccepted;
 use yii\data\ActiveDataProvider;
@@ -33,7 +34,7 @@ class AcceptedController extends Controller
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => MaterialAccepted::find(),
+            'query' => ReservedMaterial::find(),
         ]);
 
         return $this->render('index', [
