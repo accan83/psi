@@ -75,7 +75,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'expenditure/create',
                             'requested_material_id' => $model->id,
                         ], [
-                            'title' => Yii::t('yii', 'Create Request Material'),
+                            'title' => Yii::t('yii', 'Create Expenditure Material'),
                         ]);
                     }
                 ]
