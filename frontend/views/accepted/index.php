@@ -72,10 +72,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'buttons' => [
                     'create' => function ($url, $model) {
                         return Html::a('<span class="glyphicon glyphicon-new-window"></span>', [
-                            'expenditure/create',
-                            'requested_material_id' => $model->id,
+                            'accepted/create',
+                            'reserved_material_id' => $model->id,
                         ], [
-                            'title' => Yii::t('yii', 'Create Request Material'),
+                            'title' => Yii::t('yii', 'Create Accepted Material'),
                         ]);
                     }
                 ]
