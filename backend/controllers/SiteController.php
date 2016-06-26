@@ -46,7 +46,7 @@ class SiteController extends Controller
      */
     public function actions()
     {
-        if (Yii::$app->user->identity->username != 'manager') {
+        if (!Yii::$app->user->isGuest && Yii::$app->user->identity->username != 'manager') {
             return $this->redirect('http://psi.m-hasan.my.id');
         }
 
