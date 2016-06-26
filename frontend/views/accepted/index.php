@@ -1,17 +1,17 @@
 <?php
 
-use common\models\MaterialExpenditure;
-use common\models\RequestedMaterialDetail;
-use kartik\grid\GridView;
+use common\models\MaterialAccepted;
+use common\models\ReservedMaterialDetail;
 use yii\helpers\Html;
+use kartik\grid\GridView;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Material Expenditures';
+$this->title = 'Accepted Materials';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="material-expenditure-index">
+<div class="material-accepted-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -22,7 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             [
-                'label' => 'Request Created',
+                'label' => 'Reserved Created',
                 'attribute' => 'created_at',
                 'format' => ['date', 'php:d M Y [H:i:s]']
             ],
@@ -30,7 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'label' => 'Total Requested',
                 'value' => function ($model, $key) {
-                    $detail = RequestedMaterialDetail::find()->where(['requested_material_id' => $model->id])->all();
+                    $detail = ReservedMaterialDetail::find()->where(['reserved_material_id' => $model->id])->all();
                     $result = '';
                     foreach ($detail as $idx => $data) {
                         if ($idx != 0) {
@@ -56,9 +56,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     return GridView::ROW_COLLAPSED;
                 },
                 'detail' => function ($model, $key, $index, $column) {
-                    $materialExpenditure = MaterialExpenditure::find()->where(['requested_material_id' => $model->id])->orderBy(['created_at' => SORT_DESC])->all();
+                    $materialExpenditure = MaterialAccepted::find()->where(['reserved_material_id' => $model->id])->orderBy(['created_at' => SORT_DESC])->all();
 
-                    return Yii::$app->controller->renderPartial('_allExpenditure', [
+                    return Yii::$app->controller->renderPartial('_allAccepted', [
 //                        'dataProvider' => $dataProvider,
                         'dataProvider' => $materialExpenditure,
                         'requested_material_id' => $model->id,
@@ -72,10 +72,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'buttons' => [
                     'create' => function ($url, $model) {
                         return Html::a('<span class="glyphicon glyphicon-new-window"></span>', [
-                            'expenditure/create',
-                            'requested_material_id' => $model->id,
+                            'accepted/create',
+                            'reserved_material_id' => $model->id,
                         ], [
-                            'title' => Yii::t('yii', 'Create Expenditure Material'),
+                            'title' => Yii::t('yii', 'Create Accepted Material'),
                         ]);
                     }
                 ]
