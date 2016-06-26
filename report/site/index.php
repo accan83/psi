@@ -68,7 +68,12 @@
 	}
 
 	$(document).ready(function() {
-		// Load Datatables and run plugin on tables 
+		var body = document.body,
+			html = document.documentElement;
+
+		var height = Math.max( body.scrollHeight, body.offsetHeight,
+			html.clientHeight, html.scrollHeight, html.offsetHeight );
+		window.parent.postMessage(height, '*');		// Load Datatables and run plugin on tables
 		LoadDataTablesScripts(AllTables);
 		// Add Drag-n-Drop feature
 		WinMove();
