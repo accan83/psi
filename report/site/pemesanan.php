@@ -1,12 +1,12 @@
 <?php
 	
 	include '../connection.php';
-	$awal=$_POST["awal"];
-	$akhir=$_POST["akhir"];
+	$awal = strtotime($_POST["awal"] . ' 00:00:00');
+	$akhir = strtotime($_POST["akhir"] . ' 23:59:59');
 
 ?>
 
-<div class="col-md-8" style="margin-top:100px; margin-bottom:50px; border:1px solid black; padding:50px 50px;">
+<div class="col-md-8" style="border:1px solid black; padding:50px 50px;">
 	<div class="col-md-12" style="text-align:center; margin-bottom:15px; font-size:24px;">
 		Laporan pemesanan material <br>
 		"SAKURA PAINTING"
@@ -27,7 +27,7 @@
 				<?php				
 					$sql = "SELECT * FROM 
 							reserved_material p join reserved_material_detail d on p.id=d.reserved_material_id
-							where p.created_at<='".$awal."' and p.created_at>='".$akhir."'";
+							where p.created_at>='".$awal."' and p.created_at<='".$akhir."'";
 					$result = mysqli_query($conn, $sql);
 					$x=1;
 					if (mysqli_num_rows($result) > 0) {
@@ -36,7 +36,7 @@
 							<tr>
 								<td>'.$x.'</td>
 								<td>'.$row["id"].'</td>
-								<td>'.$row["created_at"].'</td>
+								<td>'.date('d M Y', $row["created_at"]).'</td>
 								<td>'.$row["material_id"].'</td>
 								<td>'.$row["qty"].'</td>
 							</tr>

@@ -1,12 +1,12 @@
 <html lang="en">
 	<body class="bs-docs-home">
-		<div class="col-md-2" style="margin-top:100px;">
+		<div class="col-md-2">
 			<ul class="nav list-group">
-				<li class="list-group-item"><a href="?id=permintaan">Laporan permintaan material</a></li>
-				<li class="list-group-item"><a href="?id=pemesanan">Laporan Pemesanan material</a></li>
-				<li class="list-group-item"><a href="?id=penerimaan">Laporan Penerimaan material</a></li>
-				<li class="list-group-item"><a href="?id=pengeluaran">Laporan Pengeluaran material</a></li>
-				<li class="list-group-item"><a href="?id=pengembalian">Laporan pengembalian material</a></li>
+				<li class="list-group-item"><a href="?id=permintaan">Laporan Permintaan Material</a></li>
+				<li class="list-group-item"><a href="?id=pemesanan">Laporan Pemesanan Material</a></li>
+				<li class="list-group-item"><a href="?id=penerimaan">Laporan Penerimaan Material</a></li>
+				<li class="list-group-item"><a href="?id=pengeluaran">Laporan Pengeluaran Material</a></li>
+				<li class="list-group-item"><a href="?id=pengembalian">Laporan Pengembalian Material</a></li>
 			</ul>
 		</div>
 		
@@ -34,9 +34,9 @@
 		if(isset($_GET["id"])){
 			?>
 			
-		<div class="col-md-8" style="margin-top:100px; margin-bottom:50px; border:1px solid black; padding:50px 50px;">
+		<div class="col-md-10" style="border:1px solid black; padding:50px 50px;">
 			<div class="col-md-12" style="text-align:center; margin-bottom:15px; font-size:24px;">
-				Laporan <?php echo $nama;?> material <br>
+				Laporan <?php echo ucwords($nama);?> Material <br>
 				"SAKURA PAINTING"
 			</div>
 			<form class="col-md-offset-4 col-md-4 form-horizontal" role="form" action="<?php echo '?view='.$nama;?>" method="post">
