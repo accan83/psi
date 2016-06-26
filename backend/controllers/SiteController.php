@@ -22,11 +22,11 @@ class SiteController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['login', 'error', 'report'],
+                        'actions' => ['login', 'error'],
                         'allow' => true,
                     ],
                     [
-                        'actions' => ['logout', 'index'],
+                        'actions' => ['logout', 'index', 'report'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -46,6 +46,10 @@ class SiteController extends Controller
      */
     public function actions()
     {
+        if (Yii::$app->user->identity->username != 'manager') {
+            return $this->redirect('http://psi.m-hasan.my.id');
+        }
+
         return [
             'error' => [
                 'class' => 'yii\web\ErrorAction',

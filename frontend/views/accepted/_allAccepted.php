@@ -19,7 +19,6 @@ use yii\helpers\Html;
 //    print_r($dataProvider);
     foreach ($dataProvider as $data) {
     ?>
-        <?= Html::a('Edit Expenditure', ['expenditure/view', 'id' => $data->id, 'requested_material_id' => $requested_material_id], ['class'=>'btn btn-primary btn-sm pull-right']) ?>
         <h3><?= date("d M Y [H:i:s]", $data->created_at); ?></h3>
         <?php
         $dataProvider2 = new ActiveDataProvider([

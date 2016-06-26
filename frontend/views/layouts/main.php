@@ -36,17 +36,31 @@ AppAsset::register($this);
     ]);
     $menuItems = [
         ['label' => 'Home', 'url' => ['/site/index']],
-        ['label' => 'Order', 'url' => ['order/index']],
-        ['label' => 'Request', 'url' => ['request/index']],
-        ['label' => 'Expenditure', 'url' => ['expenditure/index']],
-        ['label' => 'Wasted', 'url' => ['wasted/index']],
-        ['label' => 'Reserved', 'url' => ['reserved/index']],
-        ['label' => 'Accepted', 'url' => ['accepted/index']],
     ];
     if (Yii::$app->user->isGuest) {
-        $menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
     } else {
+        if (Yii::$app->user->identity->username == 'penjualan') {
+            $menuItems[] = ['label' => 'Order', 'url' => ['order/index']];
+        }
+
+        if (Yii::$app->user->identity->username == 'produksi') {
+            $menuItems[] = ['label' => 'Request', 'url' => ['request/index']];
+        }
+
+        if (Yii::$app->user->identity->username == 'gudang') {
+            $menuItems[] = ['label' => 'Expenditure', 'url' => ['expenditure/index']];
+            $menuItems[] = ['label' => 'Wasted', 'url' => ['wasted/index']];
+            $menuItems[] = ['label' => 'Accepted', 'url' => ['accepted/index']];
+        }
+
+        if (Yii::$app->user->identity->username == 'pembelian') {
+            $menuItems[] = ['label' => 'Reserved', 'url' => ['reserved/index']];
+        }
+
+        if (Yii::$app->user->identity->username == 'manager') {
+        }
+        
         $menuItems[] = [
             'label' => 'Logout (' . Yii::$app->user->identity->username . ')',
             'url' => ['/site/logout'],
