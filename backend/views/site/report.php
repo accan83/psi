@@ -6,7 +6,7 @@ $this->title = 'My Yii Application';
 ?>
 <div class="site-report">
 
-    <iframe id="idIframe" width="100%" scrolling="no" frameborder="0" src="../../report"></iframe>
+    <iframe id="idIframe" width="100%" scrolling="no" frameborder="0" src="http://report.psi.m-hasan.my.id"></iframe>
     <script type="text/javascript">
         (function() {
             // your page initialization code here
