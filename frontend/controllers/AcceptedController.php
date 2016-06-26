@@ -2,7 +2,11 @@
 
 namespace frontend\controllers;
 
+use common\models\Material;
+use common\models\MaterialAcceptedDetail;
 use common\models\ReservedMaterial;
+use common\models\ReservedMaterialDetail;
+use common\models\Stock;
 use Yii;
 use common\models\MaterialAccepted;
 use yii\data\ActiveDataProvider;
@@ -45,29 +49,35 @@ class AcceptedController extends Controller
     /**
      * Displays a single MaterialAccepted model.
      * @param integer $id
+     * @param $reserved_material_id
      * @return mixed
+     * @throws NotFoundHttpException
      */
-    public function actionView($id)
+    public function actionView($id, $reserved_material_id)
     {
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'reserved_material_id' => $reserved_material_id,
         ]);
     }
 
     /**
      * Creates a new MaterialAccepted model.
      * If creation is successful, the browser will be redirected to the 'view' page.
+     * @param $reserved_material_id
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($reserved_material_id)
     {
         $model = new MaterialAccepted();
+        $requested = ReservedMaterial::find()->where(['id' => $reserved_material_id])->one();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'id' => $model->id, 'reserved_material_id' => $reserved_material_id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
+                'reserved' => $requested,
             ]);
         }
     }
@@ -78,17 +88,31 @@ class AcceptedController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionUpdate($id)
+    public function actionUpdate($id, $material_id)
     {
-        $model = $this->findModel($id);
+        $model = new MaterialAcceptedDetail();
+        $materialAccepted = MaterialAccepted::find()->where(['id' => $id])->one();
+        $material = Material::find()->where(['id' => $material_id])->one();
+        $reservedMaterial = ReservedMaterialDetail::find()->where(['reserved_material_id' => $materialAccepted->reserved_material_id, 'material_id' => $material->id])->one();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
+        if ($model->load(Yii::$app->request->post())) {
+            $stock = $material->stock->qty;
+            if ($model->save()) {
+                $mStock = Stock::find()->where(['material_id' => $material_id])->one();
+                $mStock->qty = $stock + $model->qty;
+                $mStock->save();
+                return $this->redirect(['view', 'id' => $materialAccepted->id, 'reserved_material_id' => $materialAccepted->reserved_material_id]);
+            }
         }
+
+        $model->material_accepted_id = $id;
+        $model->material_id = $material_id;
+        $model->qty = $reservedMaterial->qty;
+        return $this->render('update', [
+            'model' => $model,
+            'materialAccepted' => $materialAccepted,
+            'material' => $material,
+        ]);
     }
 
     /**
