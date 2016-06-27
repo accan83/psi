@@ -41,6 +41,7 @@ AppAsset::register($this);
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
     } else {
         if (Yii::$app->user->identity->username == 'manager') {
+            $menuItems[] = ['label' => 'Master Material', 'url' => ['/material']];
             $menuItems[] = ['label' => 'Report', 'url' => ['/site/report']];
         }
         $menuItems[] = [
